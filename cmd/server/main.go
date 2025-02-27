@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"net/http"
+	"payment-system/internal/api"
 	db "payment-system/internal/db/sqlc"
-	"payment-system/internal/util"
+	util "payment-system/internal/util"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
@@ -23,10 +26,16 @@ func main() {
 	defer conn.Close()
 
 	store := db.NewStore(conn)
-	server, err := api.NewServer(store)
 
-	err = server.Start(config.Address)
-	if err != nil {
-		log.Fatalln("cant't start a server: ", err)
-	}
+	if err := api.InitializeWallets(store); err != nil {
+        log.Fatal(err)
+    }
+
+    // Настройка маршрутов
+    mux := api.NewServer(store);
+
+    fmt.Println("Server starting on :8080...")
+    if err := http.ListenAndServe(":8080", mux); err != nil {
+        log.Fatal(err)
+    }
 }

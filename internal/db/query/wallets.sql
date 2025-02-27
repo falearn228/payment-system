@@ -24,5 +24,8 @@ SELECT balance FROM wallets
 WHERE address = $1;
 
 -- name: CreateWallet :exec
-INSERT INTO wallets (address) 
-VALUES (gen_random_uuid()::VARCHAR(100));
+INSERT INTO wallets (address, balance)
+VALUES ($1, 1000.00);
+
+-- name: GetWalletCount :one
+SELECT COUNT(*) FROM wallets;

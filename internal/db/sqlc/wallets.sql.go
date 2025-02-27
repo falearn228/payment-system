@@ -28,12 +28,12 @@ func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionPa
 }
 
 const createWallet = `-- name: CreateWallet :exec
-INSERT INTO wallets (address) 
-VALUES (gen_random_uuid()::VARCHAR(100))
+INSERT INTO wallets (address, balance)
+VALUES ($1, 1000.00)
 `
 
-func (q *Queries) CreateWallet(ctx context.Context) error {
-	_, err := q.db.Exec(ctx, createWallet)
+func (q *Queries) CreateWallet(ctx context.Context, address string) error {
+	_, err := q.db.Exec(ctx, createWallet, address)
 	return err
 }
 
@@ -64,6 +64,17 @@ func (q *Queries) GetBalance(ctx context.Context, address string) (pgtype.Numeri
 	var balance pgtype.Numeric
 	err := row.Scan(&balance)
 	return balance, err
+}
+
+const getWalletCount = `-- name: GetWalletCount :one
+SELECT COUNT(*) FROM wallets
+`
+
+func (q *Queries) GetWalletCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, getWalletCount)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const getWalletForUpdate = `-- name: GetWalletForUpdate :one

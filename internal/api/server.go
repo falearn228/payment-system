@@ -1,45 +1,15 @@
 package api
 
 import (
+	"net/http"
 	db "payment-system/internal/db/sqlc"
-
-	"github.com/gin-gonic/gin"
 )
 
-type Server struct {
-	store  db.Store
-	Router *gin.Engine
-}
+func NewServer(store db.Store) *http.ServeMux {
+	mux := http.NewServeMux()
+    mux.HandleFunc("/api/send", sendHandler(store))
+    mux.HandleFunc("/api/transactions", getLastHandler(store))
+    mux.HandleFunc("/api/wallet/", getBalanceHandler(store))
 
-type LoginRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-func NewServer(store db.Store) (*Server, error) {
-	server := &Server{
-		store: store,
-	}
-
-	server.setupRouter()
-	return server, nil
-}
-
-func (server *Server) setupRouter() {
-	router := gin.Default()
-
-	// Публичные маршруты
-	router.POST("/api/auth", server.handleLogin)
-	router.GET("/info", server.handleGetInfo)
-	router.GET("/buy/:item", server.handleBuyItem)
-
-	server.Router = router
-}
-
-func (server *Server) Start(address string) error {
-	return server.Router.Run(address)
-}
-
-func errorResponse(err error) gin.H {
-	return gin.H{"error": err.Error()}
+	return mux
 }

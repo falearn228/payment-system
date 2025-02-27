@@ -19,9 +19,6 @@ migratedown:
 # Генерация SQLC кода	
 sqlc:
 	sqlc generate
-# Прогон всех тестов, а именно два E2E тестов, находящихся в папке internal/tests, тестов для SQLC кода и тестов для бизнес логики из папки /internal/api	
-test:
-	go test -cover ./...
 # Простой запуск сервера без контейнера	
 server:
 	go run main.go

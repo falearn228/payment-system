@@ -12,11 +12,12 @@ import (
 
 type Querier interface {
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) error
-	CreateWallet(ctx context.Context) error
+	CreateWallet(ctx context.Context, address string) error
 	DecrementBalance(ctx context.Context, arg DecrementBalanceParams) error
 	GetBalance(ctx context.Context, address string) (pgtype.Numeric, error)
 	GetLastTransactions(ctx context.Context, limit int32) ([]Transaction, error)
 	GetTransactionByID(ctx context.Context, id int32) (Transaction, error)
+	GetWalletCount(ctx context.Context) (int64, error)
 	GetWalletForUpdate(ctx context.Context, address string) (pgtype.Numeric, error)
 	IncrementBalance(ctx context.Context, arg IncrementBalanceParams) error
 }
