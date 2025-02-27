@@ -49,7 +49,7 @@ make ps
 make down
 ```
 
-5. Использование **API**:
+4. Использование **API**:
 ```bash
 Проверка баланса:
 $ curl http://localhost:8080/api/wallet/<адрес_кошелька>/balance
@@ -61,7 +61,7 @@ $ curl http://localhost:8080/api/transactions?count=5
 $ curl -X POST -H "Content-Type: application/json" -d '{"from":"адрес_отправителя","to":"адрес_получателя","amount":"100.50"}' http://localhost:8080/api/send
 ```
 
-9. Линтер для Go (Скорее всего потребуется **sudo** для установки)
+5. Линтер для Go (Скорее всего потребуется **sudo** для установки)
 ```bash
 sudo make lint-prepare
 
